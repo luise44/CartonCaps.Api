@@ -1,14 +1,14 @@
 ﻿using CartonCaps.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CartonCaps.Transversal;
 
 namespace CartonCaps.Application.Interfaces
 {
     public interface IReferralService
     {
         IReadOnlyList<ReferralDto> GetReferralsByReferrerId(Guid referrerId, int page, int size);
+        ReferralShareMessageDto GetNewReferralShareMessge(Guid referrerId, string referralCode, ReferralChannel channel, AppChannelDetail? channelDetail);
+
+        bool IsReferralCodeValid(Guid referrerId, string referralCode);
+
     }
 }

@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartonCaps.Application", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartonCaps.Dto", "CartonCaps.Dto\CartonCaps.Dto.csproj", "{0C9AE8E9-DAD1-4BA4-9AB9-72D40A49ED88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartonCaps.DeepLinkService", "CartonCaps.DeepLinkService\CartonCaps.DeepLinkService.csproj", "{26A30D2E-FDD4-4127-B924-DB4ADABFD9AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{0C9AE8E9-DAD1-4BA4-9AB9-72D40A49ED88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C9AE8E9-DAD1-4BA4-9AB9-72D40A49ED88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C9AE8E9-DAD1-4BA4-9AB9-72D40A49ED88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26A30D2E-FDD4-4127-B924-DB4ADABFD9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26A30D2E-FDD4-4127-B924-DB4ADABFD9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26A30D2E-FDD4-4127-B924-DB4ADABFD9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26A30D2E-FDD4-4127-B924-DB4ADABFD9AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

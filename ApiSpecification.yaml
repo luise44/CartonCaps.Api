@@ -36,7 +36,7 @@ paths:
         - subject: email subject (empty for sms/app)
         - messageBody: message including the referral link
 
-      operationId: createReferralShareMessage
+      operationId: GetReferralShareMessage
       security:
         - bearerAuth: []
 
@@ -56,7 +56,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateReferralShareMessageRequest'
+              $ref: '#/components/schemas/GetReferralShareMessageRequest'
             examples:
               email:
                 summary: Email channel example
@@ -336,7 +336,7 @@ components:
       bearerFormat: JWT
 
   schemas:
-    CreateReferralShareMessageRequest:
+    GetReferralShareMessageRequest:
       type: object
       required:
         - referralCode

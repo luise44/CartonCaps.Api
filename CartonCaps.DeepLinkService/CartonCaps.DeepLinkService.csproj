@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CartonCaps.Transversal\CartonCaps.Transversal.csproj" />
-  </ItemGroup>
-
 </Project>

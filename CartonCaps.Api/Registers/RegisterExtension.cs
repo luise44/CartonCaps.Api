@@ -2,6 +2,7 @@
 using CartonCaps.Application.Interfaces;
 using CartonCaps.Data.Interfaces;
 using CartonCaps.Data.MockData;
+using CartonCaps.DeepLinkService.Interface;
 using CartonCaps.Transversal;
 
 namespace CartonCaps.Api.Registers
@@ -14,7 +15,12 @@ namespace CartonCaps.Api.Registers
     .           AddOptions<MockDatabaseOptions>()
                 .BindConfiguration("MockDatabaseOptions")
                 .ValidateOnStart();
-            
+
+            services
+                .AddOptions<MessageTemplateOptions>()
+                .BindConfiguration("MessageTemplateOptions")
+                .ValidateOnStart();
+
             return services;
         }
 
@@ -37,6 +43,9 @@ namespace CartonCaps.Api.Registers
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services
+                .AddTransient<IRegisterService, RegisterService>()
+                .AddTransient<IDeepLinkService, DeepLinkService.DeepLinkService>()
+                .AddTransient<ITemplateService, TemplateService>()
                 .AddTransient<IReferralService, ReferralService>();
 
             return services;

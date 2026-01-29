@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CartonCaps.Data\CartonCaps.Data.csproj" />
+    <ProjectReference Include="..\CartonCaps.DeepLinkService\CartonCaps.DeepLinkService.csproj" />
     <ProjectReference Include="..\CartonCaps.Dto\CartonCaps.Dto.csproj" />
   </ItemGroup>
 
