@@ -1,0 +1,459 @@
+openapi: 3.0.3
+
+info:
+  title: Carton Caps Referral API
+  version: 1.0.0
+  description: |
+    Api to handle the referral feature.
+    - Provides to front end developers the endpoints to create referrals messages to share.
+
+    Key design notes:
+    - User authentication is already covered.
+    - The authenticated user (JWT) will provide the user data that backend will required.
+    - `channel` determines message behavior.
+    - `channelDetail` to be used in case it is an app (e.g. WhatsApp).
+
+servers:
+  - url: https://api.cartoncaps.com
+
+tags:
+  - name: Referrals
+    description: Referral endpoints
+
+paths:
+  /v1/referrals/share-message:
+    post:
+      tags: [Referrals]
+      summary: Generate a referral share message using an existing referral code
+      description: |
+        Generates a channel-specific referral share message for the authenticated user.
+
+        The response includes:
+        - referralCode: user referral code
+        - channel: enum value [sms, email, app]
+        - channelDetail: enum value in case it is a mobile app [wassap, telegram, other]
+        - shareUrl: generated referral link
+        - subject: email subject (empty for sms/app)
+        - messageBody: message including the referral link
+
+      operationId: createReferralShareMessage
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          description: use to mitigate abuse
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+          example: 9d1d8a9b-2db2-4a8e-9b43-0d4a1f6f1a9d
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReferralShareMessageRequest'
+            examples:
+              email:
+                summary: Email channel example
+                value:
+                  referralCode: LUISEREFERRALCODE
+                  channel: email
+
+              sms:
+                summary: SMS channel example
+                value:
+                  referralCode: LUISEREFERRALCODE
+                  channel: sms
+
+              whatsapp:
+                summary: App channel example
+                value:
+                  referralCode: LUISEREFERRALCODE
+                  channel: app
+                  channelDetail: whatsapp
+
+      responses:
+        '200':
+          description: Share message generated successfully
+          headers:
+            X-Request-Id:
+              description: Request Id in case we have any from third party api.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralShareMessageResponse'
+              examples:
+                email:
+                  value:
+                    referralCode: LUISEREFERRALCODE
+                    channel: email
+                    channelDetail: null
+                    shareUrl: https://cartoncaps.app.link/LUISEREFERRALCODE
+                    subject: "Join me on Carton Caps"
+                    messageBody: "Hey! I’m using Carton Caps to support Roosevelt Elementary.\n\nInstall the app with my link:\nhttps://cartoncaps.app.link/LUISEREFERRALCODE"
+
+                sms:
+                  value:
+                    referralCode: LUISEREFERRALCODE
+                    channel: sms
+                    channelDetail: null
+                    shareUrl: https://cartoncaps.app.link/LUISEREFERRALCODE
+                    subject: ""
+                    messageBody: "Join me on Carton Caps: https://cartoncaps.app.link/LUISEREFERRALCODE"
+
+                app:
+                  value:
+                    referralCode: LUISEREFERRALCODE
+                    channel: app
+                    channelDetail: whatsapp
+                    shareUrl: https://cartoncaps.app.link/LUISEREFERRALCODE
+                    subject: ""
+                    messageBody: "Support Roosevelt Elementary with me on Carton Caps! https://cartoncaps.app.link/LUISEREFERRALCODE"
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '409':
+          description: Referral code invalid or not usable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '429':
+          description: Rate limited
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/register/onboardinginfo:
+    get:
+      tags: [Register]
+      summary: Returns the onboarding form to use at registration
+      description: |
+        Determines which onboarding form the app should display during registration.
+
+        Behavior:
+        - If not referralCode is not present: returns defaultform
+        - If referralCode is present and valid: returns referredform
+        - If referralCode is not valid: returns 409
+      operationId: getOnboardingInfo
+      parameters:
+        - name: referralCode
+          in: query
+          required: false
+          description: Referral code obtained from link.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 32
+          example: LUISEREFERRALCODE
+      responses:
+        '200':
+          description: Onboarding form returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingInfoResponse'
+              examples:
+                default:
+                  summary: Default onboarding (no referral)
+                  value:
+                    referralCode: null
+                    onboardingForm: defaultform
+                referred:
+                  summary: Referred onboarding
+                  value:
+                    referralCode: LUISEREFERRALCODE
+                    onboardingForm: referredform
+        '400':
+          description: Invalid referralCode format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidFormat:
+                  value:
+                    code: VALIDATION_ERROR
+                    message: "referralCode needs to be between 3 and 32 characters."
+        '409':
+          description: Referral code invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidReferral:
+                  value:
+                    code: referralCode_INVALID
+                    message: "Referral code is invalid."
+        '429':
+          description: Rate limited
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                rateLimited:
+                  value:
+                    code: RATE_LIMITED
+                    message: "Too many requests."
+
+  /v1/referrals:
+    get:
+      tags: [Referrals]
+      summary: Lists referrals by user
+      description: |
+        Returns the list of referrals created by the user.
+        Results are paginated using:
+        - page: page index
+        - size: items per page
+      operationId: listUserReferrals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Page index.
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          example: 0
+        - name: size
+          in: query
+          required: false
+          description: items per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          example: 20
+      responses:
+        '200':
+          description: List of referrals by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralListResponse'
+              examples:
+                example:
+                  value:
+                    items:
+                      - fullName: "John Doe"
+                        status: complete
+                        subscriptionDate: "2025-01-12T14:23:00Z"
+                        channel: email
+                        channelDetail: null
+                      - fullName: "Jane Smith"
+                        status: complete
+                        subscriptionDate: "2025-02-12T14:23:00Z"
+                        channel: app
+                        channelDetail: whatsapp
+                    total: 2
+                    page: 0
+                    size: 20
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthenticated:
+                  value:
+                    code: UNAUTHENTICATED
+                    message: "Authentication required."
+        '403':
+          description: Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                forbidden:
+                  value:
+                    code: FORBIDDEN
+                    message: "Not allowed."
+        '429':
+          description: Rate limited
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                rateLimited:
+                  value:
+                    code: RATE_LIMITED
+                    message: "Too many requests."
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateReferralShareMessageRequest:
+      type: object
+      required:
+        - referralCode
+        - channel
+      properties:
+        referralCode:
+          type: string
+          minLength: 3
+          maxLength: 32
+          example: LUISEREFERRALCODE
+
+        channel:
+          type: string
+          enum: [email, sms, app]
+          description: Sharing channel.
+
+        channelDetail:
+          type: string
+          nullable: true
+          enum: [wassap, telegram, other]
+          description: Optional detail for app.
+
+    ReferralShareMessageResponse:
+      type: object
+      required:
+        - referralCode
+        - channel
+        - shareUrl
+        - subject
+        - messageBody
+      properties:
+        referralCode:
+          type: string
+        channel:
+          type: string
+          enum: [email, sms, app]
+        channelDetail:
+          type: string
+          nullable: true
+          enum: [wassap, telegram, other]
+        shareUrl:
+          type: string
+          format: uri
+        subject:
+          type: string
+        messageBody:
+          type: string
+
+    OnboardingInfoResponse:
+      type: object
+      required:
+        - onboardingForm
+      properties:
+        referralCode:
+          type: string
+          nullable: true
+          description: Referral code.
+        onboardingForm:
+          type: string
+          enum: [defaultform, referredform]
+          description: Onboarding form the app should display.
+
+    ReferralListResponse:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Referral'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+
+    Referral:
+      type: object
+      required:
+        - fullName
+        - status
+        - channel
+      properties:
+        fullName:
+          type: string
+        status:
+          type: string
+          enum: [pending, subscribed, rewarded, expired]
+        subscriptionDate:
+          type: string
+          format: date-time
+          nullable: true
+        channel:
+          type: string
+          enum: [email, sms, app]
+        channelDetail:
+          type: string
+          nullable: true
+          enum: [wassap, telegram, other]
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: UNAUTHENTICATED
+        message:
+          type: string
+          example: Authentication required.
+        details:
+          type: object
+          additionalProperties: true
