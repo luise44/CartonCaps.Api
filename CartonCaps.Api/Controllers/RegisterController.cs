@@ -10,8 +10,8 @@ namespace CartonCaps.Api.Controllers
     {
         private readonly IRegisterService _registerService = registerService;
 
-        [HttpGet("onboardinginfo/{referralCode}")]
-        public OnboardingForm GetOnboardingInfo(string referralCode)
+        [HttpGet("onboardinginfo")]
+        public OnboardingForm GetOnboardingInfo([FromQuery] string? referralCode)
         {
             return _registerService.GetOnboardingForm(referralCode);
         }

@@ -9,6 +9,6 @@ namespace CartonCaps.Application.Interfaces
 {
     public interface IRegisterService
     {
-        OnboardingForm GetOnboardingForm(string referralCode);
+        OnboardingForm GetOnboardingForm(string? referralCode);
     }
 }

@@ -17,7 +17,7 @@ namespace CartonCaps.Application
 
         public IReadOnlyList<ReferralDto> GetReferralsByReferrerId(Guid referrerId, int page, int size)
         {
-            return (_referralRepository.GetReferralsByReferrerAsync(referrerId, page, size))
+            return (_referralRepository.GetReferralsByReferrer(referrerId, page, size))
                 .Select(x => new ReferralDto(x.FullName, x.Status, x.SubscriptionDate, x.Channel, x.ChannelDetail, x.ReferrerUserId))
                 .ToList();
         }

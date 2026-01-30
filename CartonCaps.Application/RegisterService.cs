@@ -10,7 +10,7 @@ namespace CartonCaps.Application
 {
     public class RegisterService : IRegisterService
     {
-        public OnboardingForm GetOnboardingForm(string referralCode)
+        public OnboardingForm GetOnboardingForm(string? referralCode)
         {
             return string.IsNullOrEmpty(referralCode) ? OnboardingForm.DEFAULT : OnboardingForm.REFERRED;
         }
