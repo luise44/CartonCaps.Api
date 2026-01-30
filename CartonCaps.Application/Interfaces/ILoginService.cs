@@ -1,5 +1,4 @@
 ﻿using CartonCaps.Dto;
-using CartonCaps.Transversal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace CartonCaps.Application.Interfaces
 {
-    public interface ITemplateService
+    public interface ILoginService
     {
-        MessageTemplateDto GetMessageTemplateByChannel(ReferralChannel channel);
+        LoginValidationDto ValidateUser(string email, string password);
     }
 }

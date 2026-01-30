@@ -12,6 +12,11 @@ namespace CartonCaps.Api.Registers
         public static IServiceCollection RegisterOptions(this IServiceCollection services)
         {
             services
+                .AddOptions<JwtOptions>()
+                .BindConfiguration("JwtOptions")
+                .ValidateOnStart();
+
+            services
     .           AddOptions<MockDatabaseOptions>()
                 .BindConfiguration("MockDatabaseOptions")
                 .ValidateOnStart();
@@ -43,6 +48,7 @@ namespace CartonCaps.Api.Registers
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services
+                .AddTransient<ILoginService, LoginService>()
                 .AddTransient<IRegisterService, RegisterService>()
                 .AddTransient<IDeepLinkService, DeepLinkService.DeepLinkService>()
                 .AddTransient<ITemplateService, TemplateService>()

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CartonCaps.Dto
 {
-    public record MessageTemplate(string messageBody, string? messageSubject = null);
+    public record UserDto(Guid UserId, string Email);
 }

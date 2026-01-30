@@ -33,8 +33,8 @@ namespace CartonCaps.Application
                 ShareUrl = deepLinkResponse.shareUrl,
                 Channel = channel,
                 ChannelDetail = channelDetail,
-                MessageBody = messageTemplate.messageBody,
-                Subject = messageTemplate.messageSubject,
+                MessageBody = messageTemplate.MessageBody,
+                Subject = messageTemplate.MessageSubject,
                 ReferralCode = referralCode,
             };
         }
