@@ -15,5 +15,7 @@ namespace CartonCaps.Dto
         public string? Subject { get; set; }
 
         public string MessageBody { get; set; } = string.Empty;
+
+        public bool IsValid { get; set; }
     }
 }

@@ -17,21 +17,27 @@ namespace CartonCaps.Api.Controllers
         private readonly IReferralService _referralService = referralService;
 
         [Authorize]
-        [HttpGet("{referrerId}/{page}/{size}")]
-        public ActionResult<IEnumerable<ReferralDto>> ListUserReferrals(Guid referrerId, int page, int size)
+        [HttpGet("{page}/{size}")]
+        public ActionResult<IEnumerable<ReferralDto>> ListUserReferrals(int page, int size)
         {
-            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            var email = User.FindFirstValue(JwtRegisteredClaimNames.Email);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-
-            return Ok(_referralService.GetReferralsByReferrerId(referrerId, page, size));
+            return Ok(_referralService.GetReferralsByReferrerId(Guid.Parse(userId), page, size));
         }
 
+        [Authorize]
         [HttpPost("share-message")]
         public ActionResult<ReferralShareMessageDto> GetReferralShareMessage([FromBodyAttribute] ShareMessageRequestDto request)
         {
-            return Ok(_referralService.GetNewReferralShareMessge(new Guid(), request.ReferralCode, ReferralChannel.EMAIL, null));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var shareMessage = _referralService.GetNewReferralShareMessge(Guid.Parse(userId), request.ReferralCode, request.Channel, request.ChannelDetail);
+
+            if (!shareMessage.IsValid)
+            {
+                return Conflict("Referral code invalid or not usable");
+            }
+
+            return Ok(shareMessage);
         }
     }
 }

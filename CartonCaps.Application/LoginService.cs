@@ -1,4 +1,5 @@
 ﻿using CartonCaps.Application.Interfaces;
+using CartonCaps.Data.Interfaces;
 using CartonCaps.Dto;
 using System;
 using System.Collections.Generic;
@@ -8,23 +9,24 @@ using System.Threading.Tasks;
 
 namespace CartonCaps.Application
 {
-    public class LoginService : ILoginService
+    public class LoginService(IUserRepository userRepository) : ILoginService
     {
+        private readonly IUserRepository _userRepository = userRepository;
         public LoginValidationDto ValidateUser(string email, string password)
         {
-            if (email != "luis@email.com")
+            var user = _userRepository.GetUserByEmail(email);
+
+            if (user is null)
             {
                 return new LoginValidationDto(false);
             }
 
-            if (password != "123")
+            if (!user.Password.Equals(password, StringComparison.OrdinalIgnoreCase))
             {
                 return new LoginValidationDto(false);
             }
 
-            var user = new UserDto(Guid.NewGuid(), email);
-
-            return new LoginValidationDto(true, user);
+            return new LoginValidationDto(true, new UserDto(user.Id, user.Email));
         }
     }
 }

@@ -3,7 +3,6 @@ using CartonCaps.Data.Interfaces;
 using CartonCaps.DeepLinkService.Interface;
 using CartonCaps.Dto;
 using CartonCaps.Transversal;
-using Microsoft.Extensions.Options;
 
 namespace CartonCaps.Application
 {
@@ -26,22 +25,26 @@ namespace CartonCaps.Application
         public ReferralShareMessageDto GetNewReferralShareMessge(Guid referrerId, string referralCode, ReferralChannel channel, AppChannelDetail? channelDetail)
         {
             var deepLinkResponse = _deepLinkService.GetShareUrl(referrerId, referralCode);
+            if (!deepLinkResponse.IsValid)
+            {
+                return new ReferralShareMessageDto
+                {
+                    IsValid = false,
+                };
+            }
+
             var messageTemplate = _templateService.GetMessageTemplateByChannel(channel);
 
             return new ReferralShareMessageDto
             {
-                ShareUrl = deepLinkResponse.shareUrl,
+                IsValid = true,
+                ShareUrl = deepLinkResponse.ShareUrl,
                 Channel = channel,
                 ChannelDetail = channelDetail,
                 MessageBody = messageTemplate.MessageBody,
                 Subject = messageTemplate.MessageSubject,
                 ReferralCode = referralCode,
             };
-        }
-
-        public bool IsReferralCodeValid(Guid referrerId, string referralCode)
-        {
-            return _deepLinkService.IsReferralCodeValid(referrerId, referralCode);
         }
     }
 }

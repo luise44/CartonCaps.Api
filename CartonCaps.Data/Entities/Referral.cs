@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CartonCaps.Transversal;
 
 namespace CartonCaps.Data.Entities
 {
@@ -11,8 +7,8 @@ namespace CartonCaps.Data.Entities
         public string FullName { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime SubscriptionDate { get; set; }
-        public string Channel { get; set; } = string.Empty;
-        public string? ChannelDetail { get; set; }
+        public ReferralChannel Channel { get; set; }
+        public AppChannelDetail ChannelDetail { get; set; }
         public Guid ReferrerUserId { get; set; }
     }
 }

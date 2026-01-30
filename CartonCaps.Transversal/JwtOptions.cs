@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CartonCaps.Transversal
 {
-    public sealed class JwtOptions
+    public class JwtOptions
     {
         public string Issuer { get; set; }
         public string Audience { get; set; }

@@ -17,11 +17,6 @@ namespace CartonCaps.Api.Registers
                 .ValidateOnStart();
 
             services
-    .           AddOptions<MockDatabaseOptions>()
-                .BindConfiguration("MockDatabaseOptions")
-                .ValidateOnStart();
-
-            services
                 .AddOptions<MessageTemplateOptions>()
                 .BindConfiguration("MessageTemplateOptions")
                 .ValidateOnStart();
@@ -40,7 +35,8 @@ namespace CartonCaps.Api.Registers
         public static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
             services
-                .AddTransient<IReferralRepository, MockReferralRespository>();
+                .AddTransient<IReferralRepository, MockReferralRespository>()
+                .AddTransient<IUserRepository, MockUserRepository>();
 
             return services;
         }

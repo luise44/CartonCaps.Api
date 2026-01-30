@@ -1,11 +1,13 @@
-﻿namespace CartonCaps.Dto
+﻿using CartonCaps.Transversal;
+
+namespace CartonCaps.Dto
 {
     public record ReferralDto(
         string FullName,
         string Status,
         DateTime SubscriptionDate,
-        string Channel,
-        string? ChannelDetail,
+        ReferralChannel Channel,
+        AppChannelDetail? ChannelDetail,
         Guid ReferrerUserId
     );
 }

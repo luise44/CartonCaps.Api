@@ -131,13 +131,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-        '403':
-          description: Not allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
         '409':
           description: Referral code invalid or not usable
           content:
@@ -301,17 +294,6 @@ paths:
                   value:
                     code: UNAUTHENTICATED
                     message: "Authentication required."
-        '403':
-          description: Not allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                forbidden:
-                  value:
-                    code: FORBIDDEN
-                    message: "Not allowed."
         '429':
           description: Rate limited
           headers:

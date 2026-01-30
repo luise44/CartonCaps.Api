@@ -8,7 +8,5 @@ namespace CartonCaps.Application.Interfaces
         IReadOnlyList<ReferralDto> GetReferralsByReferrerId(Guid referrerId, int page, int size);
         ReferralShareMessageDto GetNewReferralShareMessge(Guid referrerId, string referralCode, ReferralChannel channel, AppChannelDetail? channelDetail);
 
-        bool IsReferralCodeValid(Guid referrerId, string referralCode);
-
     }
 }
